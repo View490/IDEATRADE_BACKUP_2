@@ -5,16 +5,17 @@ var startDate;
 var endDate;
 var startIndex = 0;
 var endIndex = 10;
-var symbol = 'SAT'
 let currentMode = 'small'; // Initially set to small mode
 
 // add data from html code
 
 // Merge default values with provided containerSize (if any)
 var chartContainerSize = {
-    width: 30,
-    height: 10
+    width: 5,
+    height: 5
 };
+
+var chartContainer = document.getElementById('chartContainer');
 
 var chartOptionsDefault  = {
     responsive: true,
@@ -33,13 +34,6 @@ var chartOptionsDefault  = {
                 }
             };
         },
-        // title: {
-        //     display: true,
-        //     text: getChartTitle(), // Set initial chart title
-        //     font: {
-        //         size: 32 // Change font size as needed
-        //     }
-        // },
         zoom: {
             pan: {
                 enabled: true,
@@ -164,10 +158,7 @@ function updateChartData() {
 // Function to update the chart based on user input
 function updateChart() {
     symbol = document.getElementById('symbolInput').value;
-    // modify_chartOption = Object.assign({}, chartOptionsDefault);
-    
     drawChart(df_securities, closing_prices, symbol, chartOptionsDefault)
-    // console.log('title: ', getChartTitle())
 }
 
 // Function to get chart title based on selected data
@@ -216,13 +207,12 @@ function drawChart(df_securities, closing_prices, stock_name, chartOption=chartO
         },
         options: chartOptionsDefault
     });
-    chart.canvas.parentNode.style.height    = chartContainerSize.height;
-    chart.canvas.parentNode.style.width     = chartContainerSize.width;
+    chart.canvas.parentNode.style.height    = '600px';
+    chart.canvas.parentNode.style.width     = '80%';
     console.log('last row here.')
     console.log('current wh: ',chart.canvas.parentNode.style.width, ':', chart.canvas.parentNode.style.height)
 }
 
-var chartContainer = document.getElementById('chartContainer');
 // Function to toggle chart size
 function toggleChartSize() {
 
