@@ -84,6 +84,8 @@ var chartOptionsDefault  = {
 };
 var sel_chartOption = Object.assign({}, chartOptionsDefault);
 
+
+
 // Initialize flatpickr date pickers
 var startDatePicker = flatpickr("#startDate", {
     dateFormat: "l, F j, Y", // Format for displaying dates
@@ -94,27 +96,8 @@ var startDatePicker = flatpickr("#startDate", {
         console.log(startDate)
         var index = df_securities.labels.indexOf(startDate)
         console.log(index)
-        var i = 0;
-        var direction = 1;
-        while (index==-1) {
-            document.getElementById('error-message').textContent = '';
-            i = i + 1
-            var selectedDateObj = new Date(selectedDates[0]);
-            selectedDateObj.setDate(selectedDateObj.getDate() - (i * direction));
-            var previousDate = instance.formatDate(selectedDateObj, "l, F j, Y");
-            console.log("Previous Date:", previousDate, ' <<< assigned to startDate.');
-            index = df_securities.labels.indexOf(previousDate)
-            console.log(index)
-            startDate = previousDate;
-            if (i === 20 && index == -1) {
-                if (direction === -1) {
-                    document.getElementById('error-message').textContent = 'no stock information within 20 days up/down.';
-                    break
-                }
-                i = 0;
-                direction = -1; // Change direction
-            }
-            console.log(i)
+        if (index==-1) {
+            startDate = findStartDate(selectedDates, instance, df_securities)
         }
     }
 });
@@ -127,25 +110,90 @@ var endDatePicker = flatpickr("#endDate", {
         console.log(endDate)
         index = df_securities.labels.indexOf(endDate)
         console.log(index)
-        var i = 0;
-        while (index==-1) {
-            i = i + 1
-            var selectedDateObj = new Date(selectedDates[0]);
-            selectedDateObj.setDate(selectedDateObj.getDate() - i);
-            var previousDate = instance.formatDate(selectedDateObj, "l, F j, Y");
-            console.log("Previous Date:", previousDate, ' <<< assigned to startDate.');
-            index = df_securities.labels.indexOf(previousDate)
-            console.log(index)
-            endDate = previousDate;
+        if (index==-1) {
+            endDate = findEndDate(selectedDates, instance, df_securities);
         }
     }
 });
+function findStartDate(selectedDates, instance, df_securities) {
+    var i = 0;
+    var direction = 1;
+    var index = -1;
+    var startDate = '';
+
+    while (index === -1) {
+        i++;
+        document.getElementById('error-message').textContent = '';
+        var selectedDateObj = new Date(selectedDates[0]);
+        selectedDateObj.setDate(selectedDateObj.getDate() - (i * direction));
+        var previousDate = instance.formatDate(selectedDateObj, "l, F j, Y");
+        console.log("Previous Date:", previousDate, ' <<< assigned to startDate.');
+        index = df_securities.labels.indexOf(previousDate);
+        console.log(index);
+        startDate = previousDate;
+
+        // Check if the date is not recognized and change direction
+        if (i === 20 && index === -1) {
+            if (direction === 1) {
+                direction = -1;
+                i = 0;
+            } else {
+                document.getElementById('error-message').textContent = 'no stock information within 20 days up/down.';
+                break;
+            }
+        }
+    }
+    return startDate;
+}
+function findEndDate(selectedDates, instance, df_securities) {
+    var i = 0;
+    var direction = 1;
+    var index = -1;
+    var endDate = '';
+
+    while (index === -1) {
+        i++;
+        document.getElementById('error-message').textContent = '';
+        var selectedDateObj = new Date(selectedDates[0]);
+        selectedDateObj.setDate(selectedDateObj.getDate() - (i * direction));
+        var previousDate = instance.formatDate(selectedDateObj, "l, F j, Y");
+        console.log("Previous Date:", previousDate, ' <<< assigned to endDate.');
+        index = df_securities.labels.indexOf(previousDate);
+        console.log(index);
+        endDate = previousDate;
+
+        // Check if the date is not recognized and change direction
+        if (i === 20 && index === -1) {
+            if (direction === 1) {
+                direction = -1;
+                i = 0;
+            } else {
+                document.getElementById('error-message').textContent = 'no stock information within 20 days up/down.';
+                break;
+            }
+        }
+    }
+    return endDate;
+}
+
+function alldate_show() {
+    endDate = findStartDate([df_securities.labels[0]], startDatePicker, df_securities);
+    startDate = findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities);
+
+    console.log("Start Date:", startDate);
+    console.log("End Date:", endDate);
+
+    updateChartData();
+}
+
+
 
 // Function to update chart data based on selected date range
-
 function updateChartData() {
     document.getElementById('error-message').textContent = '';
     try {
+        console.log("update Start Date:", startDate);
+        console.log("update End Date:", endDate);
         startIndex = df_securities.labels.indexOf(startDate)+1
         endIndex = df_securities.labels.indexOf(endDate)
         updateChart()
