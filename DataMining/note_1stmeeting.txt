@@ -1,0 +1,112 @@
+*** 5 March 2024 ***
+- Data Mining
+- 2 Interactive Tables
+    1. Statistic Columns Table
+    2. Non-Diary Table
+- Save as Excel
+
+*** 6 March 2024 *** 
+1. ACcess Databse, create my_table
+2. Symbol,date percentage, volumn
+3. column Time, Close, TimeFrame=1D
+4. Sever User ID Password.
+    Host: ideatrade.serveftp.net
+    Port: 51410
+    User: Sura@view
+    Pass: ZP6HpF-T04CGw_t(
+    mysql
+    database: "db_ideatrade"
+
+
+*** 11 March 2024 ***
+1. Table: Wrong table:
+    - table name: ตารางทดสอบ >>> "new_table_name" <<<  ลบได้เลยครับ
+    - table name: ตั้งชื่อผิด ลืมใส่ "_" >>> program trading set and mai 
+2. Correct table:
+    - program_trading_set_and_mai <<< ตารางเสร็จ: cols = [
+            'datetime', 
+            'Program Trading Buy', 
+            'Program Trading Sell',
+            'Program Trading Net', 
+            'Non Program Trading Buy',
+            'Non Program Trading Sell', 
+            'Non Program Trading Net', 'Total Buy',
+            'Total Sell'
+            ]
+    - program_trading_by_securities: cols = [
+            'datetime', 
+            'BAM', 
+            'BYD', 
+            'SAT', 
+            'ITC', 
+            ...(etc)..., 
+            ]
+
+3. Question:
+    - ต้องเก็บข้อมูลการเทรดในวันที่ ไม่มีการเทรด(เสาร์ อาทิตย์ และวันที่ไม่มีข้อมูล) รึเปล่า ?
+    - Dynamic Graph on HTML CSS ?
+
+4. Next Works:
+    4.1 Dynamic CSS HTML Chart with Input by Symbol name.
+    4.2 Add extension to select 'datetime'.
+    4.3 modify stock scrapping code to be able to:
+        - get currect datetime data only.
+        - validate data.
+        - push into database.
+        - all of this in py script.
+
+
+*** 13 MARCH 2024 ***
+UPDATE:
+    1. LINE CHART:
+        - plot %Trading [done]
+        - plot CLOSING PRICE [PROCESSING]
+    2. AXES:
+        - not correct axes name.
+    3. DATE SELECTION:
+        - not correct format.
+NEXT WORK:
+    1. find CLOSING PRICE
+    2. LOCAL HOST <<< P'Mint, P'1 (for testing)
+
+
+
+*** 14 MARCH 2024 ***
+CHART UPDATE:
+- Localhost, using flask python ngrox - Done
+- Error Alert when input wrong symbols
+- Avoid wrong date input >>> picks the closest previous availabel date. (need breaking)
+
+IN PROCESSING:
+1. breaking of wrong date inputs.
+2. UP_TO_DATE data (programming, closing).
+- เช็คเข้ากี่โมง
+- ตั้งเวลา ออโต้ คิวรี่ ลงเบส รันโค้ด
+
+
+
+*** 20 MARCH 2024***: [ALL DONE]
+1. breaking of wrong date inputs.
+2. UP_TO_DATE data (programming, closing).
+- เช็คเข้ากี่โมง
+- ตั้งเวลา ออโต้ คิวรี่ ลงเบส รันโค้ด
+
+
+*** 21 MARCH 2024 ***:
+Small size fig.
+    - X_Tick ?
+    - Select full date or month only ?
+    - add ALL button
+    - remove toggle mode and button
+    - ADD beside table
+        columns:
+            - SYMBOL: show symbol name.
+            - TIME: #trading in windows.
+            - MAX
+                - SYMBOL: symbol of max trading count.
+                - TIME: #trading in windows
+            - MIN
+                - SYMBOL: symbol of max trading count.
+                - TIME: #trading in windows
+            conds:
+                - MAX, MIN need scrolling down and sorting on alphabet and number.

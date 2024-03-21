@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <title>Line Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <h1 id="error-message"></h1>
+    <script type="text/javascript" src="{{ url_for('static', filename='hammer.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+
+
+<body>
+    <!--
+    <div id="chartContainer" class="chart-container small-mode">    
+        <canvas id="line-chart"></canvas>
+    </div>
+-->
+    
+    
+    <button onclick="toggleChartSize()">Toggle Size</button>    
+
+    <input type="text" id="symbolInput" placeholder="Enter symbol" value='CV'>
+    <input type="text" id="startDate" placeholder="Select start date">
+    <input type="text" id="endDate" placeholder="Select end date">
+    <button onclick="updateChartData()">Update Chart</button>
+
+    <div id="chartContainer" class="chart-container">
+        <canvas id="line-chart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='df_securities.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='closing_prices.js') }}"></script>
+
+</body>
+</html>

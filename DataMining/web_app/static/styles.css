@@ -1,0 +1,21 @@
+/* styles.css */
+
+/* Chart container */
+.chart-container {
+    /* width: 900px; Default width */
+    /* height: 300px; Default height */
+    margin: auto; /* Center the chart container */
+    border: 1px solid #ccc;
+}
+
+/* Small mode */
+.small-mode {
+    width: 200px; /* Small mode width */
+    height: 150px; /* Small mode height */
+}
+
+/* Full-size mode */
+.full-size-mode {
+    width: 100%; /* Full-size mode width */
+    height: 400px; /* Full-size mode height */
+}
