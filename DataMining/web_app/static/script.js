@@ -83,38 +83,34 @@ var chartOptionsDefault  = {
 };
 
 
-var object_datepicker = initiateDatePicker()
-var startDate = object_datepicker.startDate
-function initiateDatePicker(){
-    var startDatePicker = flatpickr("#startDate", {
-        dateFormat: "l, F j, Y", // Format for displaying dates
-        altFormat: "l, F j, Y", // Custom format for user input
-        altInput: true, // Use alternate input field for user input
-        onChange: function(selectedDates, dateStr, instance) {
-            startDate = instance.formatDate(startDatePicker.selectedDates[0],  "l, F j, Y")
-            console.log(startDate)
-            var index = df_securities.labels.indexOf(startDate)
-            console.log(index)
-            if (index==-1) {
-                startDate = findStartDate(selectedDates, instance, df_securities)
-            }
+var startDatePicker = flatpickr("#startDate", {
+    dateFormat: "l, F j, Y", // Format for displaying dates
+    altFormat: "l, F j, Y", // Custom format for user input
+    altInput: true, // Use alternate input field for user input
+    onChange: function(selectedDates, dateStr, instance) {
+        startDate = instance.formatDate(startDatePicker.selectedDates[0],  "l, F j, Y")
+        console.log(startDate)
+        var index = df_securities.labels.indexOf(startDate)
+        console.log(index)
+        if (index==-1) {
+            startDate = findStartDate(selectedDates, instance, df_securities)
         }
-    });
-    var endDatePicker = flatpickr("#endDate", {
-        dateFormat: "l, F j, Y", // Format for displaying dates
-        altFormat: "l, F j, Y", // Custom format for user input
-        altInput: true, // Use alternate input field for user input
-        onChange: function(selectedDates, dateStr, instance) {
-            endDate = instance.formatDate(endDatePicker.selectedDates[0],  "l, F j, Y");
-            console.log(endDate);
-            index = df_securities.labels.indexOf(endDate);
-            console.log(index);
-            if (index == -1) {
-                endDate = findEndDate(selectedDates, instance, df_securities);
-            }
+    }
+});
+var endDatePicker = flatpickr("#endDate", {
+    dateFormat: "l, F j, Y", // Format for displaying dates
+    altFormat: "l, F j, Y", // Custom format for user input
+    altInput: true, // Use alternate input field for user input
+    onChange: function(selectedDates, dateStr, instance) {
+        endDate = instance.formatDate(endDatePicker.selectedDates[0],  "l, F j, Y");
+        console.log(endDate);
+        index = df_securities.labels.indexOf(endDate);
+        console.log(index);
+        if (index == -1) {
+            endDate = findEndDate(selectedDates, instance, df_securities);
         }
-    });
-}
+    }
+});
 
 function findStartDate(selectedDates, instance, df_securities) {
     var i = 0;
@@ -178,12 +174,6 @@ function findEndDate(selectedDates, instance, df_securities) {
 }
 
 function alldate_show() {
-    endDate = findStartDate([df_securities.labels[0]], startDatePicker, df_securities);
-    startDate = findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities);
-
-    console.log("Start Date:", startDate);
-    console.log("End Date:", endDate);
-
     updateChartData(alldate=true);
 }
 
@@ -194,28 +184,22 @@ function updateChartData(alldate=false) {
     symbolInput.addEventListener('input', function() {
         symbolHeader.textContent = this.value;
     });
-    if (!alldate) {
-        // Check if date pickers have valid selected dates
-        try{
-           
-        } catch (erorr) {
-            // If date pickers are empty, set startDate and endDate to null or any default value
-            console.log('null date')
-            startDate = null;
-            endDate = null;
-            // Optionally, you can display an error message or handle the empty date pickers case here
-            document.getElementById('error-message').textContent = 'Please select start and end dates.';
-            return; // Exit the function to avoid further processing
-        }
-    }
 
     document.getElementById('error-message').textContent = '';
     try {
-        console.log("update Start Date:", startDate);
-        console.log("update End Date:", endDate);
-        startIndex = df_securities.labels.indexOf(startDate)+1
-        endIndex = df_securities.labels.indexOf(endDate)
-        
+        if (!alldate){
+            console.log("update Start Date:", startDate);
+            console.log("update End Date:", endDate);
+            startIndex = df_securities.labels.indexOf(startDate)+1
+            endIndex = df_securities.labels.indexOf(endDate)
+        }
+        else {
+            console.log('ALL DATE')
+            startIndex = df_securities.labels.indexOf(
+                findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities))+1
+            endIndex = df_securities.labels.indexOf(
+                findStartDate([df_securities.labels[0]], startDatePicker, df_securities))
+        }
         symbol = document.getElementById('symbolInput').value;
         drawChart(df_securities, closing_prices, symbol, chartOptionsDefault)
     }
