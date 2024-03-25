@@ -2,10 +2,11 @@
 
 /* Chart container */
 .chart-container {
-    /* width: 900px; Default width */
-    /* height: 300px; Default height */
+    width: 70%;
+    height: Default;
     margin: auto; /* Center the chart container */
     border: 5px solid #ccc;
+
 }
 
 /* Small mode */
