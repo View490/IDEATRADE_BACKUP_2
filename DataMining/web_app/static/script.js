@@ -5,11 +5,10 @@ var startDate;
 var endDate;
 var startIndex = 0;
 var endIndex = 10;
-let currentMode = 'small'; // Initially set to small mode
 
-// add data from html code
+const symbolHeader = document.getElementById('symbolHeader');
 
-// Merge default values with provided containerSize (if any)
+
 var chartContainerSize = {
     width: 5,
     height: 5
@@ -82,39 +81,41 @@ var chartOptionsDefault  = {
         }
     }
 };
-var sel_chartOption = Object.assign({}, chartOptionsDefault);
 
 
-
-// Initialize flatpickr date pickers
-var startDatePicker = flatpickr("#startDate", {
-    dateFormat: "l, F j, Y", // Format for displaying dates
-    altFormat: "l, F j, Y", // Custom format for user input
-    altInput: true, // Use alternate input field for user input
-    onChange: function(selectedDates, dateStr, instance) {
-        startDate = instance.formatDate(startDatePicker.selectedDates[0],  "l, F j, Y")
-        console.log(startDate)
-        var index = df_securities.labels.indexOf(startDate)
-        console.log(index)
-        if (index==-1) {
-            startDate = findStartDate(selectedDates, instance, df_securities)
+var object_datepicker = initiateDatePicker()
+var startDate = object_datepicker.startDate
+function initiateDatePicker(){
+    var startDatePicker = flatpickr("#startDate", {
+        dateFormat: "l, F j, Y", // Format for displaying dates
+        altFormat: "l, F j, Y", // Custom format for user input
+        altInput: true, // Use alternate input field for user input
+        onChange: function(selectedDates, dateStr, instance) {
+            startDate = instance.formatDate(startDatePicker.selectedDates[0],  "l, F j, Y")
+            console.log(startDate)
+            var index = df_securities.labels.indexOf(startDate)
+            console.log(index)
+            if (index==-1) {
+                startDate = findStartDate(selectedDates, instance, df_securities)
+            }
         }
-    }
-});
-var endDatePicker = flatpickr("#endDate", {
-    dateFormat: "l, F j, Y", // Format for displaying dates
-    altFormat: "l, F j, Y", // Custom format for user input
-    altInput: true, // Use alternate input field for user input
-    onChange: function(selectedDates, dateStr, instance) {
-        endDate = instance.formatDate(endDatePicker.selectedDates[0],  "l, F j, Y")
-        console.log(endDate)
-        index = df_securities.labels.indexOf(endDate)
-        console.log(index)
-        if (index==-1) {
-            endDate = findEndDate(selectedDates, instance, df_securities);
+    });
+    var endDatePicker = flatpickr("#endDate", {
+        dateFormat: "l, F j, Y", // Format for displaying dates
+        altFormat: "l, F j, Y", // Custom format for user input
+        altInput: true, // Use alternate input field for user input
+        onChange: function(selectedDates, dateStr, instance) {
+            endDate = instance.formatDate(endDatePicker.selectedDates[0],  "l, F j, Y");
+            console.log(endDate);
+            index = df_securities.labels.indexOf(endDate);
+            console.log(index);
+            if (index == -1) {
+                endDate = findEndDate(selectedDates, instance, df_securities);
+            }
         }
-    }
-});
+    });
+}
+
 function findStartDate(selectedDates, instance, df_securities) {
     var i = 0;
     var direction = 1;
@@ -183,30 +184,44 @@ function alldate_show() {
     console.log("Start Date:", startDate);
     console.log("End Date:", endDate);
 
-    updateChartData();
+    updateChartData(alldate=true);
 }
 
 
 
 // Function to update chart data based on selected date range
-function updateChartData() {
+function updateChartData(alldate=false) {
+    symbolInput.addEventListener('input', function() {
+        symbolHeader.textContent = this.value;
+    });
+    if (!alldate) {
+        // Check if date pickers have valid selected dates
+        try{
+           
+        } catch (erorr) {
+            // If date pickers are empty, set startDate and endDate to null or any default value
+            console.log('null date')
+            startDate = null;
+            endDate = null;
+            // Optionally, you can display an error message or handle the empty date pickers case here
+            document.getElementById('error-message').textContent = 'Please select start and end dates.';
+            return; // Exit the function to avoid further processing
+        }
+    }
+
     document.getElementById('error-message').textContent = '';
     try {
         console.log("update Start Date:", startDate);
         console.log("update End Date:", endDate);
         startIndex = df_securities.labels.indexOf(startDate)+1
         endIndex = df_securities.labels.indexOf(endDate)
-        updateChart()
+        
+        symbol = document.getElementById('symbolInput').value;
+        drawChart(df_securities, closing_prices, symbol, chartOptionsDefault)
     }
     catch (error) {
         document.getElementById('error-message').textContent = 'ERROR DETECTED';
     }
-}
-
-// Function to update the chart based on user input
-function updateChart() {
-    symbol = document.getElementById('symbolInput').value;
-    drawChart(df_securities, closing_prices, symbol, chartOptionsDefault)
 }
 
 // Function to get chart title based on selected data
@@ -218,9 +233,11 @@ function getChartTitle() {
 // Function to draw the chart with given data
 function drawChart(df_securities, closing_prices, stock_name, chartOption=chartOptionsDefault) {
     if (chart) {
+        chart.resetZoom();
         chart.destroy(); // If chart already exists, destroy it
         console.log('chart destroy')
     }
+
     console.log('start=',startIndex,' end=',endIndex, 'stockname=',stock_name)
     var labels = df_securities.labels.slice(endIndex, startIndex).reverse();
     try {
@@ -255,56 +272,6 @@ function drawChart(df_securities, closing_prices, stock_name, chartOption=chartO
         },
         options: chartOptionsDefault
     });
-    chart.canvas.parentNode.style.height    = '600px';
-    chart.canvas.parentNode.style.width     = '80%';
-    console.log('last row here.')
-    console.log('current wh: ',chart.canvas.parentNode.style.width, ':', chart.canvas.parentNode.style.height)
 }
 
-// Function to toggle chart size
-function toggleChartSize() {
 
-    // Toggle between small and full mode sizes
-    if (chartContainer.classList.contains('small-mode')) {
-        // Switch to full mode
-        chartContainer.style.width = fullModeSize.width;
-        chartContainer.style.height = fullModeSize.height + 'px';
-        chart.options.scales.x.ticks.display = true;
-        chart.data.datasets.forEach(function(dataset) {
-            dataset.showLine = true; // Show line
-            
-            dataset.pointRadius = 4; // Set point radius
-
-            dataset.pointBorderColor = dataset.borderColor; // Set point border color
-            dataset.pointBackgroundColor = dataset.backgroundColor; // Set point background color
-        });
-    } else {
-        // Switch to small mode
-        chartContainer.style.width = smallModeSize.width + 'px';
-        chartContainer.style.height = smallModeSize.height + 'px';
-        chart.options.scales.x.ticks.display = false;
-        // chart.plugins.title.font = 15;
-        chart.data.datasets.forEach(function(dataset) {
-            dataset.showLine = true; // Show line
-
-            dataset.pointRadius = 0; // Set point radius
-
-        });
-    }
-
-    // Toggle small and full mode classes
-    chartContainer.classList.toggle('small-mode');
-    chartContainer.classList.toggle('full-size-mode');
-    console.log('w ',chartContainer.style.width)
-    console.log('h ',chartContainer.style.height)
-}
-
-var smallModeSize = {
-    width: 400,
-    height: 200
-};
-
-var fullModeSize = {
-    width: '100%',
-    height: 900
-};

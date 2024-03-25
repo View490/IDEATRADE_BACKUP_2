@@ -11,115 +11,11 @@
     <h1 id="error-message"></h1>
     <script type="text/javascript" src="{{ url_for('static', filename='hammer.min.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        /* CSS styles for the table */
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .table-container {
-            flex: 1 1 70%; /* Adjust width as needed */
-            overflow-y: auto;
-            max-height: 500px; /* Adjust height as needed */
-            margin-right: 10px; /* Adjust margin as needed */
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .scrollable {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-    
-        /* Styles for the chart */
-        .chart-container {
-            flex: 1 1 30%; /* Adjust width as needed */
-            /* Add your styles for the chart container */
-        }
-        /* Add additional styles for your chart as needed */
-    </style>
 </head>
 
 
 
 <body>
-    <div class="container">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>SYMBOL</th>
-                        <th>TIME</th>
-                        <th>MAX</th>
-                        <th>MIN</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Symbol 1</td>
-                        <td>10</td>
-                        <td class="scrollable">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>SYMBOL</th>
-                                        <th>TIME</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Max Symbol 1</td>
-                                        <td>15</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Max Symbol 2</td>
-                                        <td>12</td>
-                                    </tr>
-                                    <!-- Add more rows as needed -->
-                                </tbody>
-                            </table>
-                        </td>
-                        <td class="scrollable">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>SYMBOL</th>
-                                        <th>TIME</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Min Symbol 1</td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Min Symbol 2</td>
-                                        <td>8</td>
-                                    </tr>
-                                    <!-- Add more rows as needed -->
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Add more rows as needed -->
-                </tbody>
-            </table>
-        </div>
-    
-        <!-- Your chart container -->
-        <div class="chart-container">
-            <!-- Add your chart here -->
-        </div>
-    </div>
 
     <input type="text" id="symbolInput" placeholder="Enter symbol" value='CV'>
     <input type="text" id="startDate" placeholder="Select start date">

@@ -112,7 +112,7 @@ def csv_to_js(csv_file, js_file):
                 data[col_name].append(float(value))
 
     with open(js_file, 'w') as jsfile:
-        jsfile.write('var my_data = {\n')
+        jsfile.write('var df_securities = {\n')
         for key, values in data.items():
             if key == 'labels':
                 jsfile.write(f"    '{key}': [{', '.join(map(repr, values))}],\n")
