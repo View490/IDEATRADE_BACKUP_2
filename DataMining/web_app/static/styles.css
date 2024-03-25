@@ -2,21 +2,57 @@
 
 /* Chart container */
 .chart-container {
-    width: 70%;
+    width: 75%;
     height: Default;
-    margin: auto; /* Center the chart container */
     border: 5px solid #ccc;
-
+    
 }
 
-/* Small mode */
-.small-mode {
-    width: 200px; /* Small mode width */
-    height: 150px; /* Small mode height */
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 2px solid #000;
 }
 
-/* Full-size mode */
-.full-size-mode {
-    width: 100%; /* Full-size mode width */
-    height: 400px; /* Full-size mode height */
-}
+* {
+    box-sizing: border-box;
+  }
+  
+  .row {
+    margin-left:5px;
+    display: flex;
+  }
+    
+  .column{
+    overflow-y:scroll;
+    height: 620px;
+    display:block;
+ }
+
+ 
+  
+  /* Clearfix (clear floats) */
+  .row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+    max-height: 100px;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 16px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }

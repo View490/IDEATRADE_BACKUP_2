@@ -23,9 +23,168 @@
     <button onclick="updateChartData()">Update Chart</button>
     <button onclick="alldate_show()">all date</button>
 
-    <div id="chartContainer" class="chart-container">
-        <canvas id="line-chart"></canvas>
+    <div class="container">
+        <div class="table-container">
+            <h2>Symbol Count Table</h2>
+            
+            <div class="row">
+                <div>
+                  <table>
+                    <tr>
+                      <th>First Name</th>
+                      <th>Points</th>
+                    </tr>
+                 
+                    <tr>
+                      <td>Eve</td>
+                      <td>94</td>
+                    </tr>
+                    <tr>
+                      <td>Adam</td>
+                      <td>67</td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="column" id="table_counts" style="overflow-y: scroll;">
+                    <table id="securities_table">
+                        <tr>
+                            <th><button id="symbols" onclick="sortTable()">Symbols</button></th>
+                            <th ><button id="counts" onclick="">COUNTS</button></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="chartContainer" class="chart-container">
+            <canvas id="line-chart"></canvas>
+        </div>
     </div>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='df_securities.js') }}"></script>
+    <script>
+        // Function to populate the table with data
+        function populateTable(startDate, endDate) {
+            // Get references to the input fields
+            var startDateInput = document.getElementById("startDate");
+            var endDateInput = document.getElementById("endDate");
+
+            // Log the real start and end dates
+            console.log("REAL Start Date:", startDate);
+            console.log("REAL End Date:", endDate);
+
+            // Get the index of start and end dates in the labels
+            var labels = df_securities.labels;
+            var startIndex = labels.indexOf(startDate);
+            var endIndex = labels.indexOf(endDate);
+
+            // Check if the start or end date is not found in labels
+            if (startIndex === -1 || endIndex === -1) {
+                console.log("Start date or end date not found in labels.");
+                return; // Exit the function if dates are not found
+            }
+
+            // Object to store symbol counts
+            var countMap = {};
+
+            // Iterate over the data and count non-zero occurrences for each symbol
+            for (var key in df_securities) {
+                if (key !== "labels" && df_securities.hasOwnProperty(key)) {
+                    var count = 0;
+                    for (var i = startIndex; i >= endIndex; i--) {
+                        if (parseFloat(df_securities[key][i]) > 0) {
+                            count++;
+                        }
+                    }
+                    countMap[key] = count;
+                }
+            }
+
+            // Clear previous table data
+            var table = document.getElementById("securities_table");
+            var tbody = table.querySelector("tbody");
+            tbody.innerHTML = "";
+
+            // Add header row if it doesn't exist
+            if (!table.tHead) {
+                var headerRow = table.createTHead().insertRow(0);
+                var symbolsHeader = headerRow.insertCell(0);
+                var countsHeader = headerRow.insertCell(1);
+                symbolsHeader.textContent = "SYMBOLS";
+                countsHeader.textContent = "COUNTS";
+                headerRow.style.fontWeight = "bold"; // Bold font for header row
+
+                // Add event listener to the "COUNTS" header to enable sorting
+                countsHeader.innerHTML = '<a href="#" id="countsHeader">COUNTS</a>';
+                document.getElementById("countsHeader").addEventListener("click", function(event) {
+                    event.preventDefault(); // Prevent default anchor behavior
+                    sortTable();
+                });
+            }
+
+            // Populate the table with symbol counts
+            for (var symbol in countMap) {
+                var row = tbody.insertRow();
+                var symbolCell = row.insertCell(0);
+                var countCell = row.insertCell(1);
+                symbolCell.textContent = symbol;
+                countCell.textContent = countMap[symbol];
+            }
+        }
+
+        // Function to sort the table by counts
+        function sortTable() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("securities_table");
+            switching = true;
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("TD")[1]; // Counts column
+                    y = rows[i + 1].getElementsByTagName("TD")[1]; // Counts column
+                    //check if the two rows should switch place:
+                    if (parseInt(x.innerHTML) < parseInt(y.innerHTML)) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        // Add event listeners to the input fields
+        var startDateInput = document.getElementById("startDate");
+        var endDateInput = document.getElementById("endDate");
+        startDateInput.addEventListener('change', function() {
+            var startDate = startDateInput.value;
+            var endDate = endDateInput.value;
+            populateTable(startDate, endDate);
+        });
+        endDateInput.addEventListener('change', function() {
+            var startDate = startDateInput.value;
+            var endDate = endDateInput.value;
+            populateTable(startDate, endDate);
+        });
+
+        // Initial population of the table
+        populateTable(startDateInput.value, endDateInput.value);
+
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
