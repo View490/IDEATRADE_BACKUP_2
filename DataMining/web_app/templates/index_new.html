@@ -48,8 +48,8 @@
                 <div class="column" id="table_counts" style="overflow-y: scroll;">
                     <table id="securities_table">
                         <tr>
-                            <th><button id="symbols" onclick="sortTable()">Symbols</button></th>
-                            <th ><button id="counts" onclick="">COUNTS</button></th>
+                            <th><button id="symbols">Symbols</button></th>
+                            <th ><button id="counts">COUNTS</button></th>
                         </tr>
                     </table>
                 </div>
@@ -117,7 +117,12 @@
                 countsHeader.innerHTML = '<a href="#" id="countsHeader">COUNTS</a>';
                 document.getElementById("countsHeader").addEventListener("click", function(event) {
                     event.preventDefault(); // Prevent default anchor behavior
-                    sortTable();
+                    sort_value(sort_index=1);
+                });
+                symbolsHeader.innerHTML = '<a href="#" id="symbolsHeader">SYMBOLS</a>';
+                document.getElementById("symbolsHeader").addEventListener("click", function(event) {
+                    event.preventDefault(); // Prevent default anchor behavior
+                    sort_value(sort_index=0);
                 });
             }
 
@@ -131,11 +136,14 @@
             }
         }
 
+        direction = "asc"; // Default sorting direction
         // Function to sort the table by counts
-        function sortTable() {
+        function sort_value(sort_index) {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("securities_table");
             switching = true;
+            console.log('sort index:',sort_index)
+
             /*Make a loop that will continue until
             no switching has been done:*/
             while (switching) {
@@ -149,10 +157,18 @@
                     shouldSwitch = false;
                     /*Get the two elements you want to compare,
                     one from current row and one from the next:*/
-                    x = rows[i].getElementsByTagName("TD")[1]; // Counts column
-                    y = rows[i + 1].getElementsByTagName("TD")[1]; // Counts column
+                    x = rows[i].getElementsByTagName("TD")[sort_index]; // Counts column
+                    y = rows[i + 1].getElementsByTagName("TD")[sort_index]; // Counts column
                     //check if the two rows should switch place:
-                    if (parseInt(x.innerHTML) < parseInt(y.innerHTML)) {
+                    if (
+                            (direction=="asc" && sort_index==1 && parseInt(x.innerHTML) < parseInt(y.innerHTML))
+                                ||
+                            (direction=="desc" && sort_index==1 && parseInt(x.innerHTML) > parseInt(y.innerHTML))
+                                ||
+                            (direction=="asc" && sort_index==0 && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())
+                                ||
+                            (direction=="desc" && sort_index==0 && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())
+                        ) {
                         //if so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
@@ -163,6 +179,14 @@
                     and mark that a switch has been done:*/
                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                     switching = true;
+                }
+                else {
+                    if (direction==="asc"){
+                        direction="desc";
+                    }
+                    else if (direction==="desc"){
+                        direction="asc";
+                    }
                 }
             }
         }
