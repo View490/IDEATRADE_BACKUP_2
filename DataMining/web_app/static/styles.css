@@ -8,6 +8,16 @@
     
 }
 
+.table-container {
+    overflow: hidden; /* Hide overflow to prevent horizontal scroll */
+}
+
+#securities_table thead th {
+    top: 0;
+    background-color: white; /* Add a background color to hide the original header */
+    z-index: 1; /* Ensure the header stays above the table content */
+    cursor: pointer; /* Change cursor to pointer for clickable headers */
+}
 
 .container {
     display: flex;
@@ -48,10 +58,17 @@
     max-height: 100px;
   }
   
-  th, td {
+  td {
     text-align: left;
     padding: 16px;
   }
+  th {
+    text-align: left;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+  }
+  
   
   tr:nth-child(even) {
     background-color: #f2f2f2;
