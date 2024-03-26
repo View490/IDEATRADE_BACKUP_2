@@ -53,7 +53,7 @@ var chartOptionsDefault  = {
         x: {
             display: true,
             title: {
-                display: true,
+                display: false,
                 text: 'DateTime'
             },
             ticks: {

@@ -1,15 +1,17 @@
 /* styles.css */
 
-/* Chart container */
 .chart-container {
-    width: 75%;
-    height: Default;
-    border: 5px solid #ccc;
-    
+  width: 90%; /* 85% width of its parent container */
+  height: auto; /* Let the height adjust dynamically based on content */
+  max-width: auto; /* Limit the maximum width to prevent overflow */
+  box-sizing: border-box; /* Include border in the width calculation */
 }
-
 .table-container {
-    overflow: hidden; /* Hide overflow to prevent horizontal scroll */
+  display: flex; /* Use flexbox */
+  justify-content: flex-end; /* Align items to the end (right-hand side) */
+  overflow: hidden; /* Hide overflow to prevent horizontal scroll */
+  height: auto;
+  margin-left: auto; /* Aligns the table container to the most right-hand side */
 }
 
 #securities_table thead th {
@@ -20,10 +22,9 @@
 }
 
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    border: 2px solid #000;
+  display: flex;
+  border: 2px solid #000;
+  height: 100%
 }
 
 * {
@@ -37,7 +38,7 @@
     
   .column{
     overflow-y:scroll;
-    height: 620px;
+    height: 90vh;
     display:block;
  }
 

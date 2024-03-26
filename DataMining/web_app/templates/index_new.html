@@ -24,8 +24,7 @@
     <button onclick="alldate_show()">all date</button>
 
     <div class="container">
-        <div class="table-container">
-            
+        <div class="table-container">    
             <div class="row">
                 <div class="column" id="table_counts" style="overflow-y: scroll;">
                     <table id="securities_table">
@@ -69,7 +68,9 @@
                             count++;
                         }
                     }
-                    countMap[key] = count;
+                    if (count>0){
+                        countMap[key] = count;
+                    }
                     if (key===sel_key){
                         sel_key_value = count;
                     }
