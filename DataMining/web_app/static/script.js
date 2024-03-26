@@ -5,9 +5,7 @@ var startDate;
 var endDate;
 var startIndex = 0;
 var endIndex = 10;
-
-const symbolHeader = document.getElementById('symbolHeader');
-
+var symbol;
 
 var chartContainerSize = {
     width: 5,
@@ -27,7 +25,7 @@ var chartOptionsDefault  = {
         get title() {
             return {
                 display: true,
-                text: getChartTitle(), // Call the function to get updated title
+                text: getChartTitle() + ' : ' + sel_key_value, // Call the function to get updated title
                 font: {
                     size: 32 // Change font size as needed
                 }
@@ -95,6 +93,8 @@ var startDatePicker = flatpickr("#startDate", {
         if (index==-1) {
             startDate = findStartDate(selectedDates, instance, df_securities)
         }
+        console.log('startDate: ', startDate)
+        populateTable(startDate, endDate)
     }
 });
 var endDatePicker = flatpickr("#endDate", {
@@ -109,6 +109,7 @@ var endDatePicker = flatpickr("#endDate", {
         if (index == -1) {
             endDate = findEndDate(selectedDates, instance, df_securities);
         }
+        populateTable(startDate, endDate)
     }
 });
 
@@ -178,29 +179,44 @@ function alldate_show() {
 }
 
 
-
+var previous_all = false;
 // Function to update chart data based on selected date range
 function updateChartData(alldate=false) {
-    symbolInput.addEventListener('input', function() {
-        symbolHeader.textContent = this.value;
-    });
-
     document.getElementById('error-message').textContent = '';
     try {
         if (!alldate){
+            previous_all = false;
             console.log("update Start Date:", startDate);
             console.log("update End Date:", endDate);
             startIndex = df_securities.labels.indexOf(startDate)+1
             endIndex = df_securities.labels.indexOf(endDate)
         }
         else {
+            
             console.log('ALL DATE')
-            startIndex = df_securities.labels.indexOf(
-                findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities))+1
-            endIndex = df_securities.labels.indexOf(
-                findStartDate([df_securities.labels[0]], startDatePicker, df_securities))
+            tmp_start = findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities);
+            tmp_end = findStartDate([df_securities.labels[0]], startDatePicker, df_securities);
+            startIndex = df_securities.labels.indexOf(tmp_start)+1
+            endIndex = df_securities.labels.indexOf(tmp_end)
+            if (previous_all==false){
+                populateTable(tmp_start, tmp_end)
+                previous_all = true;
+            }
         }
         symbol = document.getElementById('symbolInput').value;
+        for (var key in df_securities) {
+            if (key === symbol) {
+                var count = 0;
+                for (var i = startIndex; i >= endIndex; i--) {
+                    if (parseFloat(df_securities[key][i]) > 0) {
+                        console.log('i=',i)
+                        count++;
+                    }
+                }
+                sel_key_value = count;
+                console.log('sel_key_value: ',sel_key_value,count)
+            }
+        }
         drawChart(df_securities, closing_prices, symbol, chartOptionsDefault)
     }
     catch (error) {
@@ -211,6 +227,7 @@ function updateChartData(alldate=false) {
 // Function to get chart title based on selected data
 function getChartTitle() {
     symbol = document.getElementById('symbolInput').value;
+    console.log('symbol in getChartTitle: ',symbol)
     return symbol
 }
 

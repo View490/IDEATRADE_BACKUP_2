@@ -27,23 +27,6 @@
         <div class="table-container">
             
             <div class="row">
-                <div>
-                  <table>
-                    <tr>
-                      <th>SYMBOL</th>
-                      <th>COUNT</th>
-                    </tr>
-                 
-                    <tr>
-                      <td>sel_string</td>
-                      <td>sel_number</td>
-                    </tr>
-                    <tr>
-                      <td>Adam</td>
-                      <td>67</td>
-                    </tr>
-                  </table>
-                </div>
                 <div class="column" id="table_counts" style="overflow-y: scroll;">
                     <table id="securities_table">
                         <tr>
@@ -61,30 +44,22 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='df_securities.js') }}"></script>
     <script>
+        var sel_key_value;
         // Function to populate the table with data
         function populateTable(startDate, endDate) {
-            // Get references to the input fields
-            var startDateInput = document.getElementById("startDate");
-            var endDateInput = document.getElementById("endDate");
-
-            // Log the real start and end dates
-            console.log("REAL Start Date:", startDate);
-            console.log("REAL End Date:", endDate);
-
             // Get the index of start and end dates in the labels
             var labels = df_securities.labels;
             var startIndex = labels.indexOf(startDate);
             var endIndex = labels.indexOf(endDate);
-
             // Check if the start or end date is not found in labels
             if (startIndex === -1 || endIndex === -1) {
                 console.log("Start date or end date not found in labels.");
-                return; // Exit the function if dates are not found
+                return;
             }
-
             // Object to store symbol counts
             var countMap = {};
-
+            var sel_key = document.getElementById('symbolInput').value;
+            console.log('symbolINPUT: ',sel_key)
             // Iterate over the data and count non-zero occurrences for each symbol
             for (var key in df_securities) {
                 if (key !== "labels" && df_securities.hasOwnProperty(key)) {
@@ -95,14 +70,15 @@
                         }
                     }
                     countMap[key] = count;
+                    if (key===sel_key){
+                        sel_key_value = count;
+                    }
                 }
             }
-
             // Clear previous table data
             var table = document.getElementById("securities_table");
             var tbody = table.querySelector("tbody");
             tbody.innerHTML = "";
-
             // Add header row if it doesn't exist
             if (!table.tHead) {
                 var headerRow = table.createTHead().insertRow(0);
@@ -124,15 +100,33 @@
                     sort_value(sort_index=0);
                 });
             }
-
             // Populate the table with symbol counts
-            for (var symbol in countMap) {
+            for (var key in countMap) {
                 var row = tbody.insertRow();
                 var symbolCell = row.insertCell(0);
                 var countCell = row.insertCell(1);
-                symbolCell.textContent = symbol;
-                countCell.textContent = countMap[symbol];
+                symbolCell.textContent = key;
+                countCell.textContent = countMap[key];
             }
+/*
+            // Clear SELECTED previous table data
+            var table = document.getElementById("securities_table_sel");
+            var tbody = table.querySelector("tbody");
+            tbody.innerHTML = "";
+            // Add header row if it doesn't exist
+            if (!table.tHead) {
+                var headerRow = table.createTHead().insertRow(0);
+                var symbolsHeader = headerRow.insertCell(0);
+                var countsHeader = headerRow.insertCell(1);
+                symbolsHeader.textContent = "SYMBOL";
+                countsHeader.textContent = "COUNT";
+                headerRow.style.fontWeight = "bold"; // Bold font for header row
+            }
+            var row = tbody.insertRow();
+            var symbolCell = row.insertCell(0);
+            var countCell = row.insertCell(1);
+            symbolCell.textContent = sel_key;
+            countCell.textContent = sel_key_value;*/
         }
 
         direction = "asc"; // Default sorting direction
@@ -191,21 +185,21 @@
         }
 
         // Add event listeners to the input fields
-        var startDateInput = document.getElementById("startDate");
-        var endDateInput = document.getElementById("endDate");
-        startDateInput.addEventListener('change', function() {
-            var startDate = startDateInput.value;
-            var endDate = endDateInput.value;
-            populateTable(startDate, endDate);
-        });
-        endDateInput.addEventListener('change', function() {
-            var startDate = startDateInput.value;
-            var endDate = endDateInput.value;
-            populateTable(startDate, endDate);
-        });
+        //var startDateInput = document.getElementById("startDate");
+        //var endDateInput = document.getElementById("endDate");
+        //startDateInput.addEventListener('change', function() {
+        //    console.log('on change start, populatetable')
+        //    var startDate = startDateInput.value;
+        //    var endDate = endDateInput.value;
+        //    populateTable(startDate, endDate);
+        //});
+        //endDateInput.addEventListener('change', function() {
+       //     console.log('on change end, populatetable')
+        //    var startDate = startDateInput.value;
+        //    var endDate = endDateInput.value;
+        //    populateTable(startDate, endDate);
+       // });
 
-        // Initial population of the table
-        populateTable(startDateInput.value, endDateInput.value);
 
     </script>
 
