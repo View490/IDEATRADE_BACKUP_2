@@ -63,9 +63,9 @@
             for (var key in df_securities) {
                 if (key !== "labels" && df_securities.hasOwnProperty(key)) {
                     var count = 0;
-                    for (var i = startIndex; i >= endIndex; i--) {
+                    for (var i = startIndex; i >= endIndex; i--) { // pluse 1 on startIndex ???
                         if (parseFloat(df_securities[key][i]) > 0) {
-                            count++;
+                            count++; // may not be used
                         }
                     }
                     if (count>0){

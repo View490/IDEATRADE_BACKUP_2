@@ -186,17 +186,17 @@ function updateChartData(alldate=false) {
     try {
         if (!alldate){
             previous_all = false;
-            console.log("update Start Date:", startDate);
-            console.log("update End Date:", endDate);
-            startIndex = df_securities.labels.indexOf(startDate)+1
+            startIndex = df_securities.labels.indexOf(startDate)
             endIndex = df_securities.labels.indexOf(endDate)
+            console.log("update Start Date:", startDate, startIndex);
+            console.log("update End Date:", endDate, endIndex);
         }
         else {
             
             console.log('ALL DATE')
             tmp_start = findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities);
             tmp_end = findStartDate([df_securities.labels[0]], startDatePicker, df_securities);
-            startIndex = df_securities.labels.indexOf(tmp_start)+1
+            startIndex = df_securities.labels.indexOf(tmp_start)
             endIndex = df_securities.labels.indexOf(tmp_end)
             if (previous_all==false){
                 populateTable(tmp_start, tmp_end)
@@ -209,12 +209,11 @@ function updateChartData(alldate=false) {
                 var count = 0;
                 for (var i = startIndex; i >= endIndex; i--) {
                     if (parseFloat(df_securities[key][i]) > 0) {
-                        console.log('i=',i)
                         count++;
+                        console.log('symbol i count: ',symbol,i,count)
                     }
                 }
                 sel_key_value = count;
-                console.log('sel_key_value: ',sel_key_value,count)
             }
         }
         drawChart(df_securities, closing_prices, symbol, chartOptionsDefault)
@@ -227,7 +226,6 @@ function updateChartData(alldate=false) {
 // Function to get chart title based on selected data
 function getChartTitle() {
     symbol = document.getElementById('symbolInput').value;
-    console.log('symbol in getChartTitle: ',symbol)
     return symbol
 }
 
@@ -240,19 +238,19 @@ function drawChart(df_securities, closing_prices, stock_name, chartOption=chartO
     }
 
     console.log('start=',startIndex,' end=',endIndex, 'stockname=',stock_name)
-    var labels = df_securities.labels.slice(endIndex, startIndex).reverse();
+    console.log('start=',startDate,' end=',endDate, 'stockname=',stock_name)
+    var labels = df_securities.labels.slice(endIndex, startIndex+1).reverse();
     try {
-        var column1Data = df_securities[stock_name].slice(endIndex, startIndex).reverse();
+        var column1Data = df_securities[stock_name].slice(endIndex, startIndex+1).reverse();
     }
     catch {
-
     }
     try {
-        var column2Data = closing_prices[stock_name].slice(endIndex, startIndex).reverse();
+        var column2Data = closing_prices[stock_name].slice(endIndex, startIndex+1).reverse();
     }
     catch {
-
     }
+    console.log('LENGTH OF DATA1 and DATA2: ', (column1Data), (column2Data))
     chart = new Chart(ctx, {
         type: 'line',
         data: {
