@@ -194,14 +194,17 @@ function updateChartData(alldate=false) {
         else {
             
             console.log('ALL DATE')
-            tmp_start = findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities);
-            tmp_end = findStartDate([df_securities.labels[0]], startDatePicker, df_securities);
-            startIndex = df_securities.labels.indexOf(tmp_start)
-            endIndex = df_securities.labels.indexOf(tmp_end)
+            startDate = findEndDate([df_securities.labels[df_securities.labels.length - 1]], endDatePicker, df_securities);
+            endDate = findStartDate([df_securities.labels[0]], startDatePicker, df_securities);
+            startIndex = df_securities.labels.indexOf(startDate)
+            endIndex = df_securities.labels.indexOf(endDate)
             if (previous_all==false){
-                populateTable(tmp_start, tmp_end)
+                populateTable(startDate, endDate)
                 previous_all = true;
             }
+            console.log('tmp: ',startDate, endDate)
+            startDatePicker.setDate(startDate);
+            endDatePicker.setDate(endDate);
         }
         symbol = document.getElementById('symbolInput').value;
         for (var key in df_securities) {
